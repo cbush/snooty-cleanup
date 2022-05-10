@@ -2,7 +2,7 @@
   "name": "snooty-cleanup",
   "version": "0.0.1",
   "description": "Clean up snooty projects",
-  "main": "./build",
+  "main": "./build/main.js",
   "bin": {
     "snooty-cleanup": "./build/main.js"
   },
@@ -20,6 +20,8 @@
   "license": "MIT",
   "devDependencies": {
     "@babel/preset-typescript": "^7",
+    "@types/find-in-files": "^0.5.1",
+    "@types/glob": "^7.2.0",
     "@types/jest": "^26",
     "@types/node": "^12",
     "@typescript-eslint/eslint-plugin": "^4",
@@ -36,6 +38,8 @@
     "typescript": "^4"
   },
   "dependencies": {
+    "find-in-files": "^0.5.0",
+    "glob": "^8.0.1",
     "yargs": "^15.0.0"
   }
 }
