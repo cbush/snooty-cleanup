@@ -27,6 +27,7 @@ export async function printUnusedIncludes(path: string): Promise<void> {
         .map((match) => /\.\. include:: ([^\s]+)/.exec(match)?.[1] as string)
         .filter((match) => match != null)
         .map(devirtualizeFile)
+        .map((filePath) => Path.join(path, filePath))
         .map((match) => ({ filePath: match, includedFrom: filePath }));
     })
     .flat(1)
