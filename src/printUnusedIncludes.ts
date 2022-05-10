@@ -5,7 +5,7 @@ import cbGlob from "glob";
 
 const glob = util.promisify(cbGlob);
 
-export async function cleanUp(path: string): Promise<void> {
+export async function printUnusedIncludes(path: string): Promise<void> {
   // Find all files in the includes directories
   const includesDirectory = Path.join(path, "includes");
   const globPattern = Path.join(includesDirectory, "**/*.@(rst|yaml|txt)");
@@ -42,8 +42,8 @@ export async function cleanUp(path: string): Promise<void> {
     .filter(([, value]) => value.size === 0)
     .map(([key]) => key)
     .flat(1)
-    .forEach((x) => {
-      console.log(x);
+    .forEach((unusedFilePath) => {
+      console.log(unusedFilePath);
     });
 }
 

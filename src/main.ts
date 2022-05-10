@@ -1,4 +1,4 @@
-import { cleanUp } from "./cleanUp";
+import { printUnusedIncludes } from "./printUnusedIncludes";
 import * as yargs from "yargs";
 
 async function main() {
@@ -8,7 +8,7 @@ async function main() {
     .demandCommand().argv;
   const paths = args._;
   const promises = paths.map(async (path) => {
-    await cleanUp(path as string);
+    await printUnusedIncludes(path as string);
   });
   await Promise.allSettled(promises);
 }
