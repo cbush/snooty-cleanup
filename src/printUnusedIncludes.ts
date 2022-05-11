@@ -18,7 +18,11 @@ export async function printUnusedIncludes(path: string): Promise<void> {
   };
 
   // Find instances of includes in files
-  const fileMatches = await find(/\.\. include:: (.*)/, path, /\.(txt|rst)$/);
+  const fileMatches = await find(
+    /\.\. include:: (.*)/,
+    path,
+    /\.(txt|rst|ya?ml)$/
+  );
 
   // Update include file list to track actual inclusion on other files
   Object.entries(fileMatches)
