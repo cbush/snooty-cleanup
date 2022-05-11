@@ -27,6 +27,7 @@ export async function printUnusedIncludes(path: string): Promise<void> {
         .map((match) => /\.\. include:: ([^\s]+)/.exec(match)?.[1] as string)
         .filter((match) => match != null)
         .map(devirtualizeFile)
+        .flat(1)
         .map((filePath) => Path.join(path, filePath))
         .map((match) => ({ filePath: match, includedFrom: filePath }));
     })
@@ -49,13 +50,31 @@ export async function printUnusedIncludes(path: string): Promise<void> {
 }
 
 // Some included paths are actually virtual files derived from yaml files. This
-// function returns the probable original path if given a probable virtual path.
-const devirtualizeFile = (path: string): string => {
+// function returns the probable original paths if given a probable virtual path.
+const devirtualizeFile = (path: string): string[] => {
   if (/\/steps\//.test(path)) {
-    return path.replace("/steps/", "/steps-").replace(".rst", ".yaml");
+    const realPath = path.replace("/steps/", "/steps-");
+    return [
+      realPath.replace(".rst", ".yaml"),
+      realPath.replace(".rst", ".yml"),
+      realPath.replace(".txt", ".yaml"),
+      realPath.replace(".txt", ".yml"),
+    ];
   }
   if (/\/extracts\//.test(path)) {
-    return path.replace("/extracts/", "/extracts-").replace(".rst", ".yaml");
+    const possiblePath = path
+      .replace("/extracts/", "/extracts-")
+      .replace(".rst", "");
+    const dirname = Path.dirname(possiblePath);
+    const basename = Path.basename(possiblePath);
+    const possibleNames = basename.split("-");
+    // Generate a path for each possible name by building up the pieces of the
+    // name. For example: "extracts-example-la-di-da" might come from
+    // "extracts-example", "extracts-example-la", "extracts-example-la-di", etc.
+    return possibleNames
+      .map((_, i) => Path.join(dirname, possibleNames.slice(0, i).join("-")))
+      .map((name) => [`${name}.yaml`, `${name}.yml`])
+      .flat(1);
   }
-  return path;
+  return [path, path.replace(".rst", ".txt")];
 };
